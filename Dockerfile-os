@@ -1,0 +1,28 @@
+FROM debian:12-slim
+
+# Load external scripts
+WORKDIR /
+ENV PATH="/scripts:${PATH}" \
+    DEBIAN_FRONTEND=noninteractive
+
+RUN groupadd -r -g 101 bareos && \
+    useradd  -r -u 101 bareos -g bareos -c "Bareos System User" -M -d /var/lib/bareos -s /usr/sbin/nologin
+
+# Install basic packges and register bareos repo
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+            apt-utils && \
+    apt-get install -y --no-install-recommends \
+            curl ca-certificates gnupg2 && \
+    apt-get install -y --no-install-recommends \
+            net-tools acl procps lz4 bzip2 cpio \
+            fdisk lsb-base ssl-cert \ 
+            scsitools mt-st \
+            liblockfile-bin liblockfile1 \
+            libgssapi3-heimdal libasn1-8-heimdal libldap-common \
+            libbsd0 libedit2 libxml2 libjson-c5 vim gosu 
+    #apt-get clean
+
+CMD [ "bash" ]
+
+
